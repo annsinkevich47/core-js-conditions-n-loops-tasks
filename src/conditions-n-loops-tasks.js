@@ -158,27 +158,55 @@ function convertToRomanNumerals(num) {
  */
 function convertNumberToString(numberStr) {
   let endStr = '';
-  const objOfNumbersAndPoint = {
-    ' 0 ': 'zero',
-    ' 1 ': 'one',
-    ' 2 ': 'two',
-    ' 3 ': 'three',
-    ' 4 ': 'four',
-    ' 5 ': 'five',
-    ' 6 ': 'six',
-    ' 7 ': 'seven',
-    ' 8 ': 'eight',
-    ' 9 ': 'nine',
-    ' . ': 'point',
-    ' , ': 'point',
-    ' - ': 'minus',
-  };
   for (let i = 0; i < numberStr.length; i += 1) {
-    const letter = ` ${numberStr[i]} `;
-    if (letter in objOfNumbersAndPoint) {
-      endStr += objOfNumbersAndPoint[letter];
+    const letter = `${numberStr[i]}`;
+    let next = i;
+    next += 1;
+    switch (letter) {
+      case '0':
+        endStr += 'zero';
+        break;
+      case '1':
+        endStr += 'one';
+        break;
+      case '2':
+        endStr += 'two';
+        break;
+      case '3':
+        endStr += 'three';
+        break;
+      case '4':
+        endStr += 'four';
+        break;
+      case '5':
+        endStr += 'five';
+        break;
+      case '6':
+        endStr += 'six';
+        break;
+      case '7':
+        endStr += 'seven';
+        break;
+      case '8':
+        endStr += 'eight';
+        break;
+      case '9':
+        endStr += 'nine';
+        break;
+      case '-':
+        endStr += 'minus';
+        break;
+      case ',':
+        endStr += 'point';
+        break;
+      case '.':
+        endStr += 'point';
+        break;
+      default:
+        break;
     }
-    if (i + 1 !== numberStr.length) {
+
+    if (next !== numberStr.length) {
       endStr += ' ';
     }
   }
@@ -274,6 +302,9 @@ function getBalanceIndex(arr) {
   let firstSum = 0;
   let secondSum = 0;
   const arrLength = arr.length;
+  if (arr.length === 0) {
+    return -1;
+  }
   let balanceElement;
   const firstPart = Math.floor(arrLength / 2) - 1;
   const secondPart = Math.floor(arrLength / 2) + 1;
