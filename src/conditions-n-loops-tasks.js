@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 /* *******************************************************************************************
  *                                                                                           *
  * Please read the following tutorial before implementing tasks:                             *
@@ -156,6 +157,7 @@ function convertToRomanNumerals(num) {
  *  '1950.2'  => 'one nine five zero point two'
  */
 function convertNumberToString(numberStr) {
+  let endStr = '';
   const objOfNumbersAndPoint = {
     ' 0 ': 'zero',
     ' 1 ': 'one',
@@ -171,16 +173,16 @@ function convertNumberToString(numberStr) {
     ' , ': 'point',
     ' - ': 'minus',
   };
-  let output = '';
-  const objOfValues = Object.values(objOfNumbersAndPoint);
-  const objOfKeys = Object.keys(objOfNumbersAndPoint);
-
   for (let i = 0; i < numberStr.length; i += 1) {
-    const word = objOfValues[objOfKeys.indexOf(numberStr[i])];
-    output += word;
-    output += ' ';
+    const letter = ` ${numberStr[i]} `;
+    if (letter in objOfNumbersAndPoint) {
+      endStr += objOfNumbersAndPoint[letter];
+    }
+    if (i + 1 !== numberStr.length) {
+      endStr += ' ';
+    }
   }
-  return output;
+  return endStr;
 }
 
 /**
@@ -289,6 +291,7 @@ function getBalanceIndex(arr) {
   if (firstSum === secondSum) {
     return arr.indexOf(balanceElement);
   }
+  console.log('-1');
   return -1;
 }
 
@@ -433,22 +436,20 @@ function sortByAsc(arr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  // // const newStr = '';
-  // const strStorage = str;
+  const strStorage = str;
+  // let strCopy = str;
   // let storage;
-  // for (let i = 0; i < strStorage.length; i += 1) {
-  //   // newStr += strStorage[i];
-  //   for (let j = 0; j < iterations; j += 1) {
-  //     console.log(strStorage[j + 1]);
+  // for (let j = 0; j < iterations; j += 1) {
+  //   for (let i = 0; i < strStorage.length; i += 1) {
   //     if (i !== 0 && i % 2 !== 0) {
-  //       storage = strStorage[i + 1];
-  //       console.log(strStorage[+1]);
-  //       strStorage[i + 1] = strStorage[i];
-  //       strStorage[i] = storage;
+  //       storage = strCopy.slice(i, i + 1);
+  //       strStorage = strStorage.replace(strCopy[i], '');
+  //       strStorage += storage;
   //     }
   //   }
+  //   strCopy = strStorage;
   // }
-  return str && iterations;
+  return strStorage && iterations;
 }
 
 /**
@@ -469,26 +470,35 @@ function shuffleChar(str, iterations) {
  * @returns {number} The nearest larger number, or original number if none exists.
  */
 function getNearestBigger(number) {
-  const num = number.toString().split('');
+  let newNumber = number;
+  const num = [];
+  while (newNumber > 0) {
+    const digit = newNumber % 10;
+    num.unshift(digit);
+    newNumber = Math.floor(newNumber / 10);
+  }
+
   let i = num.length - 1;
   while (i > 0 && num[i - 1] >= num[i]) {
     i -= 1;
   }
   if (i === 0) {
-    return number;
+    return num;
   }
   let j = num.length - 1;
   while (num[j] <= num[i - 1]) {
     j -= 1;
   }
   [num[i - 1], num[j]] = [num[j], num[i - 1]];
-
-  const sorted = num.slice(i).sort();
-
-  const result = parseInt(num.slice(0, i).concat(sorted).join(''), 10);
+  const newNum = num;
+  const sorted = newNum.splice(i, newNum.length).sort();
+  const splice = num.splice(0, i);
+  const joinArr = [...splice, ...sorted];
+  const result = parseInt(joinArr.join(''), 10);
   return result;
 }
-
+// const sorted = num.slice(i).sort();
+// const result = parseInt(num.slice(0, i).concat(sorted).join(''), 10);
 module.exports = {
   isPositive,
   getMaxNumber,
