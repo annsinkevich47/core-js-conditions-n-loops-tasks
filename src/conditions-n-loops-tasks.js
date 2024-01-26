@@ -422,64 +422,41 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
+
+function partition(arrNew, start, end) {
+  const arr1 = arrNew;
+  let newStart = start;
+  let newEnd = end;
+  const pivotVal = arr1[Math.floor((newStart + newEnd) / 2)];
+  while (newStart <= newEnd) {
+    while (arr1[newStart] < pivotVal) {
+      newStart += 1;
+    }
+    while (arr1[newEnd] > pivotVal) {
+      newEnd -= 1;
+    }
+    if (newStart <= newEnd) {
+      const temp = arr1[newStart];
+      arr1[newStart] = arr1[newEnd];
+      arr1[newEnd] = temp;
+      newStart += 1;
+      newEnd -= 1;
+    }
+  }
+  return newStart;
+}
+function quickSort(newArr, start = 0, end = newArr.length - 1) {
+  const arr2 = newArr;
+  if (start < end) {
+    const index = partition(arr2, start, end);
+    quickSort(arr2, start, index - 1);
+    quickSort(arr2, index, end);
+  }
+  return arr2;
+}
+
 function sortByAsc(arr) {
-  // if (arr.length < 2) {
-  //   return arr;
-  // }
-  // let min = 1;
-  // let max = arr.length - 1;
-  // let rand = Math.floor(min + Math.random() * (max + 1 - min));
-  // let firstElement = arr[rand];
-  // // const firstElement = arr[0];
-  // const left = [];
-  // const right = [];
-  // for (let i = 1; i < arr.length; i += 1) {
-  //   if (firstElement > arr[i]) {
-  //     left[left.length] = arr[i];
-  //   } else {
-  //     right[right.length] = arr[i];
-  //   }
-  // }
-  // return [...sortByAsc(left), firstElement, ...sortByAsc(right)];
-  let endArr;
-  let count = 0;
-  function partition(arrNew, start, end) {
-    const arr1 = arrNew;
-    let newStart = start;
-    let newEnd = end;
-    const pivotVal = arr1[Math.floor((newStart + newEnd) / 2)];
-    while (start <= newEnd) {
-      while (arr1[newStart] < pivotVal) {
-        newStart += 1;
-      }
-      while (arr1[newEnd] > pivotVal) {
-        newEnd -= 1;
-      }
-      if (newStart <= newEnd) {
-        const temp = arr1[newStart];
-        arr1[newStart] = arr1[newEnd];
-        arr1[newEnd] = temp;
-        newStart += 1;
-        newEnd -= 1;
-      }
-    }
-    return start;
-  }
-  function quickSort(newArr, start = 0, end = newArr.length - 1) {
-    const arr2 = newArr;
-    if (start < end) {
-      const index = partition(arr2, start, end);
-      quickSort(arr2, start, index - 1);
-      quickSort(arr2, index, end);
-    }
-    endArr = arr2;
-    count += 1;
-    return endArr && count;
-  }
-  if (count === 0) {
-    quickSort(arr);
-  }
-  return endArr;
+  return quickSort(arr);
 }
 
 /**
