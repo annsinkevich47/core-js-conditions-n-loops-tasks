@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 /* *******************************************************************************************
  *                                                                                           *
  * Please read the following tutorial before implementing tasks:                             *
@@ -299,30 +298,19 @@ function isContainNumber(num, digit) {
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
 function getBalanceIndex(arr) {
-  let firstSum = 0;
-  let secondSum = 0;
-  const arrLength = arr.length;
-  if (arr.length === 0) {
-    return -1;
-  }
-  let balanceElement;
-  const firstPart = Math.floor(arrLength / 2) - 1;
-  const secondPart = Math.floor(arrLength / 2) + 1;
-
-  for (let i = 0; i < arrLength; i += 1) {
-    if (i <= firstPart) {
-      firstSum += arr[i];
-    } else if (i >= secondPart) {
-      secondSum += arr[i];
-    } else {
-      balanceElement = arr[i];
+  for (let i = 1; i < arr.length; i += 1) {
+    let firstSum = 0;
+    for (let j = i - 1; j >= 0; j -= 1) {
+      firstSum += arr[j];
+    }
+    let secondSum = 0;
+    for (let l = i + 1; l < arr.length; l += 1) {
+      secondSum += arr[l];
+    }
+    if (firstSum === secondSum) {
+      return i;
     }
   }
-  console.log(arr);
-  if (firstSum === secondSum) {
-    return arr.indexOf(balanceElement);
-  }
-  console.log('-1');
   return -1;
 }
 
@@ -435,18 +423,63 @@ function rotateMatrix(matrix) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 function sortByAsc(arr) {
-  const newArr = arr;
-  let storage;
-  for (let i = 1; i < newArr.length; i += 1) {
-    for (let j = 0; j < i; j += 1) {
-      if (newArr[i] < newArr[j]) {
-        storage = newArr[i];
-        newArr[i] = newArr[j];
-        newArr[j] = storage;
+  // if (arr.length < 2) {
+  //   return arr;
+  // }
+  // let min = 1;
+  // let max = arr.length - 1;
+  // let rand = Math.floor(min + Math.random() * (max + 1 - min));
+  // let firstElement = arr[rand];
+  // // const firstElement = arr[0];
+  // const left = [];
+  // const right = [];
+  // for (let i = 1; i < arr.length; i += 1) {
+  //   if (firstElement > arr[i]) {
+  //     left[left.length] = arr[i];
+  //   } else {
+  //     right[right.length] = arr[i];
+  //   }
+  // }
+  // return [...sortByAsc(left), firstElement, ...sortByAsc(right)];
+  let endArr;
+  let count = 0;
+  function partition(arrNew, start, end) {
+    const arr1 = arrNew;
+    let newStart = start;
+    let newEnd = end;
+    const pivotVal = arr1[Math.floor((newStart + newEnd) / 2)];
+    while (start <= newEnd) {
+      while (arr1[newStart] < pivotVal) {
+        newStart += 1;
+      }
+      while (arr1[newEnd] > pivotVal) {
+        newEnd -= 1;
+      }
+      if (newStart <= newEnd) {
+        const temp = arr1[newStart];
+        arr1[newStart] = arr1[newEnd];
+        arr1[newEnd] = temp;
+        newStart += 1;
+        newEnd -= 1;
       }
     }
+    return start;
   }
-  return arr;
+  function quickSort(newArr, start = 0, end = newArr.length - 1) {
+    const arr2 = newArr;
+    if (start < end) {
+      const index = partition(arr2, start, end);
+      quickSort(arr2, start, index - 1);
+      quickSort(arr2, index, end);
+    }
+    endArr = arr2;
+    count += 1;
+    return endArr && count;
+  }
+  if (count === 0) {
+    quickSort(arr);
+  }
+  return endArr;
 }
 
 /**
@@ -467,20 +500,54 @@ function sortByAsc(arr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  const strStorage = str;
-  // let strCopy = str;
-  // let storage;
-  // for (let j = 0; j < iterations; j += 1) {
-  //   for (let i = 0; i < strStorage.length; i += 1) {
-  //     if (i !== 0 && i % 2 !== 0) {
-  //       storage = strCopy.slice(i, i + 1);
-  //       strStorage = strStorage.replace(strCopy[i], '');
-  //       strStorage += storage;
-  //     }
-  //   }
-  //   strCopy = strStorage;
-  // }
-  return strStorage && iterations;
+  let strStorage = str;
+  let strPart1 = '';
+  let strPart2 = '';
+  let count = 0;
+  let count2 = 0;
+
+  let realIterations;
+
+  function shuffle(strNew) {
+    for (let i = 0; i < strNew.length; i += 1) {
+      if (i % 2 === 0) {
+        strPart1 += strNew[i];
+      } else {
+        strPart2 += strNew[i];
+      }
+    }
+    count += 1;
+    strStorage = strPart1 + strPart2;
+    strPart1 = '';
+    strPart2 = '';
+    if (strStorage === str) {
+      realIterations = count;
+      count += 100;
+      count2 += 1;
+    }
+    return count;
+  }
+
+  while (count < 100) {
+    shuffle(strStorage);
+  }
+  if (count2 > 0) {
+    if (iterations < realIterations) {
+      while (count2 <= iterations) {
+        shuffle(strStorage);
+        count2 += 1;
+      }
+    } else {
+      const repeat = Math.floor(iterations / realIterations);
+      const repeat1 = repeat * realIterations;
+      const repeat2 = iterations - repeat1;
+      while (count2 <= repeat2) {
+        shuffle(strStorage);
+        count2 += 1;
+      }
+    }
+  }
+  return strStorage;
 }
 
 /**
@@ -528,8 +595,7 @@ function getNearestBigger(number) {
   const result = parseInt(joinArr.join(''), 10);
   return result;
 }
-// const sorted = num.slice(i).sort();
-// const result = parseInt(num.slice(0, i).concat(sorted).join(''), 10);
+
 module.exports = {
   isPositive,
   getMaxNumber,
